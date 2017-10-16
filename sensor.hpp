@@ -38,7 +38,9 @@ volatile static uint16_t duration_prev;
 
 typedef struct Sweep{
     uint16_t        magicNumber;
-    uint8_t         sensorINFO;
+    uint8_t         sensorID;
+    uint8_t         lighthouse;
+    uint8_t         rotor;
     uint16_t        sweepDuration; 
 }Sweep; 
 
@@ -129,7 +131,7 @@ void falling_IRQ_S1(void)
         }else{
             active_sweep_b = startT; 
             uint16_t baseStationGap= ((active_sweep_b - active_sweep_a)); 
-            if(baseStationGap > 6500)
+            if(baseStationGap > 6000)
             {
                 lighthouse = 1;
             }else{
@@ -142,7 +144,9 @@ void falling_IRQ_S1(void)
         Sweep * sweep = static_cast<Sweep*>(malloc( sizeof(Sweep))); 
         if(sweep != NULL){
             uint8_t sensorID = 0;
-            sweep->sensorINFO      = (uint8_t)(vertical << 7| lighthouse << 6 | sensorID);
+            sweep->lighthouse = lighthouse;
+            sweep->rotor = vertical;
+            sweep->sensorID = 0;
             sweep->sweepDuration   = sweep_duration; 
             sweep->magicNumber     = 0xBEEF;
         }

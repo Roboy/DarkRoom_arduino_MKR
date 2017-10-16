@@ -21,8 +21,13 @@ void setup() {
 void loop() {
   Sweep * detectedSweep = FIFO128_read(sweepFIFO); 
   while( NULL != detectedSweep){
-      Serial.println("broadcasting sensor data");
-      wifi->broadcast_send((uint8_t*)detectedSweep, 5);
+      Serial.print("sweepDuration ");
+      Serial.print(detectedSweep->sweepDuration);
+      Serial.print(" lighthouse ");
+      Serial.print(detectedSweep->lighthouse);
+      Serial.print(" rotor ");
+      Serial.println(detectedSweep->rotor);
+      wifi->broadcast_send((uint8_t*)detectedSweep, sizeof(Sweep));
       free(detectedSweep); 
       detectedSweep = FIFO128_read(sweepFIFO); 
   }
